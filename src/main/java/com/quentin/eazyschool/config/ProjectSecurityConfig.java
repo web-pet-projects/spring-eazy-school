@@ -18,20 +18,22 @@ public class ProjectSecurityConfig {
 
     @Bean
     SecurityFilterChain projectSecurityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable)
+        http.csrf(csrf -> csrf.ignoringRequestMatchers("/contact/saveMsg"))
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/", "/home").permitAll()
                         .requestMatchers("/contact").permitAll()
+                        .requestMatchers("/about").permitAll()
+                        .requestMatchers("/contact/saveMsg").permitAll()
                         .requestMatchers("/courses").permitAll()
                         .requestMatchers("/holidays/**").permitAll()
                         .requestMatchers("/login").permitAll()
+                        .requestMatchers("/logout").permitAll()
                         .requestMatchers("/assets/**").permitAll()
                         .requestMatchers("/dashboard").authenticated()
-                        .anyRequest().authenticated()
                 )
                 .formLogin(loginConfigurer -> loginConfigurer
                         .loginPage("/login")
-                        .defaultSuccessUrl("/dashboard")
+                        .defaultSuccessUrl("/dashboard", true)
                         .failureUrl("/login?error=true")
                         .permitAll())
                 .logout(logoutConfigurer -> logoutConfigurer
@@ -45,15 +47,15 @@ public class ProjectSecurityConfig {
 
     @Bean
     public UserDetailsService userDetailsService() {
-        UserDetails user = User.withDefaultPasswordEncoder()
+        UserDetails user = User.builder()
                 .username("user1")
-                .password("password1")
+                .password("{noop}password1")
                 .roles("USER")
                 .build();
 
-        UserDetails admin = User.withDefaultPasswordEncoder()
+        UserDetails admin = User.builder()
                 .username("admin")
-                .password("admin123")
+                .password("{noop}admin123")
                 .roles("USER", "ADMIN")
                 .build();
 
