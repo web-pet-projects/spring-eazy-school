@@ -34,6 +34,8 @@ public class LoggingAspect {
     @Before("execution(* com.quentin.eazyschool.repository.*.save*(..))")
     public void auditChanges(JoinPoint joinPoint) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        log.info("User {} called {}", auth.getName(), joinPoint.getSignature());
+        if (auth != null) {
+            log.info("User {} called {}", auth.getName(), joinPoint.getSignature());
+        }
     }
 }

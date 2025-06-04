@@ -34,7 +34,7 @@ public class ProjectSecurityConfig {
                         .requestMatchers(PathRequest.toH2Console()).permitAll()
                         .requestMatchers("/dashboard").authenticated()
                         .requestMatchers("/contact/displayMessages").hasRole("ADMIN")
-                        .requestMatchers("contact/closeMsg/**").hasRole("ADMIN")
+                        .requestMatchers("/contact/closeMsg/**").hasRole("ADMIN")
                 )
                 .formLogin(loginConfigurer -> loginConfigurer
                         .loginPage("/login")
