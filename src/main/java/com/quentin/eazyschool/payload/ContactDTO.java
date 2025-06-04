@@ -5,6 +5,8 @@ import lombok.Data;
 
 @Data
 public class ContactDTO {
+    private int contactId;
+
     @NotBlank(message = "Name must not be blank")
     private String name;
 

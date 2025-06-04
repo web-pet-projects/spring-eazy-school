@@ -1,10 +1,10 @@
 package com.quentin.eazyschool.config;
 
-import org.springframework.boot.autoconfigure.security.SecurityProperties;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -18,18 +18,23 @@ public class ProjectSecurityConfig {
 
     @Bean
     SecurityFilterChain projectSecurityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(csrf -> csrf.ignoringRequestMatchers("/contact/saveMsg"))
+        http.csrf(csrf -> csrf
+                        .ignoringRequestMatchers("/contact/saveMsg")
+                        .ignoringRequestMatchers(PathRequest.toH2Console()))
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/", "/home").permitAll()
                         .requestMatchers("/contact").permitAll()
-                        .requestMatchers("/about").permitAll()
                         .requestMatchers("/contact/saveMsg").permitAll()
+                        .requestMatchers("/about").permitAll()
                         .requestMatchers("/courses").permitAll()
                         .requestMatchers("/holidays/**").permitAll()
                         .requestMatchers("/login").permitAll()
                         .requestMatchers("/logout").permitAll()
                         .requestMatchers("/assets/**").permitAll()
+                        .requestMatchers(PathRequest.toH2Console()).permitAll()
                         .requestMatchers("/dashboard").authenticated()
+                        .requestMatchers("/contact/displayMessages").hasRole("ADMIN")
+                        .requestMatchers("contact/closeMsg/**").hasRole("ADMIN")
                 )
                 .formLogin(loginConfigurer -> loginConfigurer
                         .loginPage("/login")
@@ -40,7 +45,9 @@ public class ProjectSecurityConfig {
                         .logoutSuccessUrl("/login?logout=true")
                         .invalidateHttpSession(true)
                         .permitAll())
-                .httpBasic(withDefaults());
+                .httpBasic(withDefaults())
+                .headers(headersConfigurer -> headersConfigurer.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin));
+        ;
 
         return http.build();
     }
