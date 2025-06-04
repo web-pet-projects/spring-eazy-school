@@ -1,7 +1,9 @@
 package com.quentin.eazyschool.config;
 
 import com.quentin.eazyschool.model.Holiday;
+import com.quentin.eazyschool.model.Role;
 import com.quentin.eazyschool.repository.HolidayRepository;
+import com.quentin.eazyschool.repository.RoleRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
@@ -27,7 +29,7 @@ public class WebConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public CommandLineRunner initData(HolidayRepository holidayRepository) {
+    public CommandLineRunner initData(HolidayRepository holidayRepository, RoleRepository roleRepository) {
         return args -> {
             List<Holiday> holidays = Arrays.asList(
                     new Holiday(1, " Jan 1 ", "New Year's Day", Holiday.Type.FESTIVAL),
@@ -43,6 +45,17 @@ public class WebConfig implements WebMvcConfigurer {
                 holiday.setCreatedBy("DBA");
             }
             holidayRepository.saveAll(holidays);
+
+            List<Role> roles = Arrays.asList(
+                    new Role(1, "STUDENT"),
+                    new Role(999, "ADMIN")
+            );
+            for (Role role : roles) {
+                role.setCreatedBy("DBA");
+            }
+            roleRepository.saveAll(roles);
+
+
         };
     }
 }

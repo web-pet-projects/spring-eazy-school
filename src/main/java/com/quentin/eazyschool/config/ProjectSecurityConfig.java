@@ -20,9 +20,11 @@ public class ProjectSecurityConfig {
     SecurityFilterChain projectSecurityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf
                         .ignoringRequestMatchers("/contact/saveMsg")
-                        .ignoringRequestMatchers(PathRequest.toH2Console()))
+                        .ignoringRequestMatchers(PathRequest.toH2Console())
+                        .ignoringRequestMatchers("/public/**"))
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/", "/home").permitAll()
+                        .requestMatchers("/public/**").permitAll()
                         .requestMatchers("/contact").permitAll()
                         .requestMatchers("/contact/saveMsg").permitAll()
                         .requestMatchers("/about").permitAll()
