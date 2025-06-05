@@ -9,6 +9,7 @@ import com.quentin.eazyschool.repository.RoleRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,6 +18,7 @@ public class PersonService {
     private final PersonRepository personRepository;
     private final ModelMapper modelMapper;
     private final RoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public boolean createUser(RegisterRequest registerRequest) {
         Person person = modelMapper.map(registerRequest, Person.class);
@@ -24,6 +26,7 @@ public class PersonService {
                 () -> new RuntimeException("Role not found")
         );
         person.setRole(role);
+        person.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
         Person savedPerson = personRepository.save(person);
         return savedPerson.getId() > 0;
     }

@@ -1,13 +1,16 @@
 package com.quentin.eazyschool.config;
 
 import com.quentin.eazyschool.model.Holiday;
+import com.quentin.eazyschool.model.Person;
 import com.quentin.eazyschool.model.Role;
 import com.quentin.eazyschool.repository.HolidayRepository;
+import com.quentin.eazyschool.repository.PersonRepository;
 import com.quentin.eazyschool.repository.RoleRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -29,7 +32,7 @@ public class WebConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public CommandLineRunner initData(HolidayRepository holidayRepository, RoleRepository roleRepository) {
+    public CommandLineRunner initData(HolidayRepository holidayRepository, RoleRepository roleRepository, PersonRepository personRepository, PasswordEncoder passwordEncoder) {
         return args -> {
             List<Holiday> holidays = Arrays.asList(
                     new Holiday(1, " Jan 1 ", "New Year's Day", Holiday.Type.FESTIVAL),
@@ -55,6 +58,16 @@ public class WebConfig implements WebMvcConfigurer {
             }
             roleRepository.saveAll(roles);
 
+            Person admin = Person.builder()
+                    .username("admin")
+                    .email("admin@quentin.eazyschool.com")
+                    .password(passwordEncoder.encode("admin"))
+                    .role(roles.stream().filter(r -> r.getName().equals("ADMIN")).findFirst().orElseThrow(
+                            () -> new RuntimeException("No admin role found")
+                    ))
+                    .build();
+            admin.setCreatedBy("DBA");
+            personRepository.save(admin);
 
         };
     }

@@ -31,17 +31,20 @@ public class AuthController {
                         @RequestParam(value = "register", required = false) String register,
                         Model model) {
         String errorMessage = null;
+        String successMessage = null;
         if (error != null) {
             errorMessage = "Username or password is incorrect !!";
         }
         if (logout != null) {
-            errorMessage = "You have been logged out successfully !!";
+            successMessage = "You have been logged out successfully !!";
         }
         if (register != null) {
-            errorMessage = "Registered successfully !! Please enter registered credentials";
+            successMessage = "Registered successfully !! Please enter registered credentials";
         }
         model.addAttribute("errorMessage", errorMessage);
+        model.addAttribute("successMessage", successMessage);
         log.info("Successfully logged in");
+
         return "login";
     }
 
