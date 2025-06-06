@@ -14,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
@@ -66,8 +67,22 @@ public class WebConfig implements WebMvcConfigurer {
                             () -> new RuntimeException("No admin role found")
                     ))
                     .build();
+            Person user1 = Person.builder()
+                    .username("user1")
+                    .email("user1@example.com")
+                    .password(passwordEncoder.encode("user1"))
+                    .role(roles.stream().filter(r -> r.getName().equals("STUDENT")).findFirst().orElseThrow(
+                            () -> new RuntimeException("No STUDENT role found")
+                    ))
+                    .dateOfBirth(LocalDate.of(2000,2,20))
+                    .gender(Person.Gender.FEMALE)
+                    .firstName("John").lastName("Doe")
+                    .mobileNum("1234567890")
+                    .build();
             admin.setCreatedBy("DBA");
+            user1.setCreatedBy("DBA");
             personRepository.save(admin);
+            personRepository.save(user1);
 
         };
     }

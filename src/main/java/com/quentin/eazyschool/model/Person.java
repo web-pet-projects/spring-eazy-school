@@ -2,11 +2,9 @@ package com.quentin.eazyschool.model;
 
 import com.quentin.eazyschool.validator.Password;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Past;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 
@@ -23,6 +21,7 @@ public class Person extends BaseEntity{
     private Long id;
 
     @Size(min = 2, max = 50)
+    @Column(unique = true)
     private String username;
 
     @Size(min = 2, max = 100)
@@ -31,7 +30,8 @@ public class Person extends BaseEntity{
     @Size(min = 2, max = 100)
     private String lastName;
 
-    @Past
+    @PastOrPresent
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateOfBirth;
 
     @Enumerated(EnumType.STRING)
@@ -41,6 +41,7 @@ public class Person extends BaseEntity{
     private String mobileNum;
 
     @Email
+    @Column(unique = true)
     private String email;
 
     @Password
@@ -55,5 +56,11 @@ public class Person extends BaseEntity{
     private Address address;
 
     public enum Gender { MALE, FEMALE, UNKNOWN }
+
+    @Transient
+    public Integer getAge() {
+        return (dateOfBirth != null) ? LocalDate.now().getYear() - dateOfBirth.getYear() : null;
+    }
+
 
 }

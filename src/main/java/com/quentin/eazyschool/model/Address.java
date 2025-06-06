@@ -18,17 +18,20 @@ public class Address extends BaseEntity {
     private Long id;
 
     @Size(min = 2, max = 200)
-    private String address1;
-    @Size(min = 2, max = 200)
-    private String address2;
-    @Size(min = 2, max = 50)
+    @Column(name = "address1")
+    private String primary;
+
+    @Size(max = 200)
+    @Column(name = "address2")
+    private String secondary;
+    @Size(max = 50)
     private String city;
-    @Size(min = 2, max = 50)
+    @Size(max = 50)
     private String state;
 
     @NotBlank
     @Pattern(regexp = "(^$|[0-9]{5})", message = "Zip Code must contain 5 digits")
-    private Integer zipCode;
+    private String zipCode;
     private String country;
 
     @OneToOne(mappedBy = "address")

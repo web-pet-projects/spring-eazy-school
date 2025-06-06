@@ -4,6 +4,7 @@ import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,18 +22,17 @@ public class ProjectSecurityConfig {
                         .ignoringRequestMatchers(PathRequest.toH2Console())
                         .ignoringRequestMatchers("/public/**"))
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/", "/home").permitAll()
-                        .requestMatchers("/public/**").permitAll()
-                        .requestMatchers("/contact").permitAll()
-                        .requestMatchers("/contact/saveMsg").permitAll()
-                        .requestMatchers("/about").permitAll()
-                        .requestMatchers("/courses").permitAll()
-                        .requestMatchers("/holidays/**").permitAll()
-                        .requestMatchers("/login").permitAll()
-                        .requestMatchers("/logout").permitAll()
-                        .requestMatchers("/assets/**").permitAll()
+                        .requestMatchers(
+                                "/", "/home", "/public/**",
+                                "/contact", "/about", "/holidays/**", "/courses",
+                                "/contact/saveMsg",
+                                "/login", "/logout",
+                                "/assets/**")
+                        .permitAll()
                         .requestMatchers(PathRequest.toH2Console()).permitAll()
-                        .requestMatchers("/dashboard").authenticated()
+                        .requestMatchers(
+                                "/dashboard", "/profile"
+                        ).authenticated()
                         .requestMatchers("/contact/displayMessages").hasRole("ADMIN")
                         .requestMatchers("/contact/closeMsg/**").hasRole("ADMIN")
                 )
@@ -56,5 +56,4 @@ public class ProjectSecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
 }
