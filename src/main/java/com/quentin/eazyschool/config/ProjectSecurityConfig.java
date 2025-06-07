@@ -31,11 +31,10 @@ public class ProjectSecurityConfig {
                         .permitAll()
                         .requestMatchers(PathRequest.toH2Console()).permitAll()
                         .requestMatchers(
-                                "/dashboard", "/profile"
+                                "/dashboard", "/profile", "/courses/**"
                         ).authenticated()
                         .requestMatchers(
                                 "/contact/messages/**",
-                                "/courses/**",
                                 "/classes", "/classes/**"
                         ).hasRole("ADMIN")
                 )

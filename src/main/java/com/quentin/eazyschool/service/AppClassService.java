@@ -65,8 +65,7 @@ public class AppClassService {
         }
 
         student.setAppClass(classEntity);
-        personRepository.save(student);
-
+//        personRepository.save(student);
         classEntity.getStudents().add(student);
         appClassRepository.save(classEntity);
     }
@@ -80,8 +79,7 @@ public class AppClassService {
         );
 
         student.setAppClass(null);
-        personRepository.save(student);
-
+//        personRepository.save(student);
         classEntity.getStudents().remove(student);
         appClassRepository.save(classEntity);
     }

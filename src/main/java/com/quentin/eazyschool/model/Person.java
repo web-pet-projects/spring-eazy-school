@@ -7,6 +7,8 @@ import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
@@ -58,6 +60,9 @@ public class Person extends BaseEntity{
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "class_id")
     private AppClass appClass;
+
+    @OneToMany(mappedBy = "student")
+    private List<Enrollment> courses = new ArrayList<>();
 
     public enum Gender { MALE, FEMALE, UNKNOWN }
 
