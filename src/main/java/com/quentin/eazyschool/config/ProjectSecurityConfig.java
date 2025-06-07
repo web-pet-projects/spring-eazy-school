@@ -33,8 +33,11 @@ public class ProjectSecurityConfig {
                         .requestMatchers(
                                 "/dashboard", "/profile"
                         ).authenticated()
-                        .requestMatchers("/contact/displayMessages").hasRole("ADMIN")
-                        .requestMatchers("/contact/closeMsg/**").hasRole("ADMIN")
+                        .requestMatchers(
+                                "/contact/messages/**",
+                                "/courses/**",
+                                "/classes", "/classes/**"
+                        ).hasRole("ADMIN")
                 )
                 .formLogin(loginConfigurer -> loginConfigurer
                         .loginPage("/login")

@@ -31,7 +31,7 @@ public class ContactController {
         return "contact";
     }
 
-    @PostMapping("/saveMsg")
+    @PostMapping
     public String handleSaveMsg(@Valid @ModelAttribute("contact") ContactDTO contactDTO, Errors errors) {
         if (errors.hasErrors()) {
             log.error("Contact form has error: {}", errors.toString());
@@ -45,19 +45,19 @@ public class ContactController {
         return "redirect:/contact";
     }
 
-    @GetMapping("/displayMessages")
+    @GetMapping("/messages")
     public String displayMessages( Model model ) {
         List<ContactDTO> messages = contactService.fetchAllByStatus(Contact.Status.OPEN);
-        model.addAttribute("contactMsgs", messages);
+        model.addAttribute("messages", messages);
         return "messages";
     }
 
-    @GetMapping("/closeMsg")
+    @GetMapping("/messages/close")
     public String handleCloseMsg(@RequestParam("id") Long contactId) {
         boolean isSaved = contactService.closeMessage(contactId);
         if (!isSaved) {
             return "messages";
         }
-        return "redirect:/contact/displayMessages";
+        return "redirect:/contact/messages";
     }
 }
