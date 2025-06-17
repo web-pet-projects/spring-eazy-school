@@ -6,6 +6,10 @@ import com.quentin.eazyschool.repository.ContactRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,6 +30,14 @@ public class ContactService {
     public List<ContactDTO> fetchAllByStatus(Contact.Status status) {
         List<Contact> messages = contactRepository.findAllByStatus(status);
         return messages.stream().map(c -> modelMapper.map(c, ContactDTO.class)).toList();
+    }
+
+    public Page<ContactDTO> fetchPageByStatus(Contact.Status status, int page, int limit, String[] sort) {
+        Sort sortOrder = Sort.by(Sort.Direction.fromString(sort[1]), sort[0]);
+        Pageable pageable = PageRequest.of(page, limit, sortOrder);
+        Page<Contact> contactPage = contactRepository.findAllByStatus(status, pageable);
+
+        return contactPage.map(contact -> modelMapper.map(contact, ContactDTO.class));
     }
 
     public boolean closeMessage(Long contactId) {

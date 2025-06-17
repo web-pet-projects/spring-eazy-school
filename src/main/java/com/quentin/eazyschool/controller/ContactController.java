@@ -1,11 +1,13 @@
 package com.quentin.eazyschool.controller;
 
+import com.quentin.eazyschool.constants.EazySchoolConstants;
 import com.quentin.eazyschool.model.Contact;
 import com.quentin.eazyschool.payload.ContactDTO;
 import com.quentin.eazyschool.service.ContactService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -46,9 +48,17 @@ public class ContactController {
     }
 
     @GetMapping("/messages")
-    public String displayMessages( Model model ) {
-        List<ContactDTO> messages = contactService.fetchAllByStatus(Contact.Status.OPEN);
-        model.addAttribute("messages", messages);
+    public String displayMessages( Model model,
+                                   @RequestParam(value = "page", defaultValue = EazySchoolConstants.DEFAULT_PAGE_NUMBER) int page,
+                                   @RequestParam(value = "limit", defaultValue = EazySchoolConstants.DEFAULT_PAGE_SIZE) int limit,
+                                   @RequestParam(value = "sort", defaultValue = EazySchoolConstants.DEFAULT_SORT) String[] sort) {
+//        List<ContactDTO> messages = contactService.fetchAllByStatus(Contact.Status.OPEN );
+        Page<ContactDTO> contactDTOPage = contactService.fetchPageByStatus(Contact.Status.OPEN, page - 1, limit, sort);
+        model.addAttribute("currentPage", contactDTOPage.getNumber() + 1);
+        model.addAttribute("reverseSortDir", sort[1].equals("asc") ? "desc" : "asc");
+        model.addAttribute("messages", contactDTOPage.getContent());
+        model.addAttribute("totalPages", contactDTOPage.getTotalPages());
+        model.addAttribute("sort", sort);
         return "messages";
     }
 
