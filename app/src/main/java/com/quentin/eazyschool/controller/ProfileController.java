@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Slf4j
-@Controller
+@Controller("profileControllerBean")
 @RequiredArgsConstructor(onConstructor_ = {@Autowired})
 public class ProfileController {
 

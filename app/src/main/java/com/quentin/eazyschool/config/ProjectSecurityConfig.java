@@ -27,15 +27,20 @@ public class ProjectSecurityConfig {
                                 "/contact", "/about", "/holidays/**", "/courses",
                                 "/contact/saveMsg",
                                 "/login", "/logout",
+                                "/profile/**", "/contacts/**",
                                 "/assets/**")
                         .permitAll()
                         .requestMatchers(PathRequest.toH2Console()).permitAll()
                         .requestMatchers(
-                                "/dashboard", "/profile", "/courses/**"
+                                "/dashboard",
+                                "/profile",
+                                "/courses/**",
+                                "/api/**"
                         ).authenticated()
                         .requestMatchers(
-                                "/contact/messages**",
-                                "/classes", "/classes/**"
+                                "/contact/messages/**",
+                                "/classes", "/classes/**",
+                                "/actuator/**"
                         ).hasRole("ADMIN")
                 )
                 .formLogin(loginConfigurer -> loginConfigurer

@@ -27,11 +27,6 @@ public class ContactService {
         return savedContact != null && savedContact.getId() > 0;
     }
 
-    public List<ContactDTO> fetchAllByStatus(Contact.Status status) {
-        List<Contact> messages = contactRepository.findAllByStatus(status);
-        return messages.stream().map(c -> modelMapper.map(c, ContactDTO.class)).toList();
-    }
-
     public Page<ContactDTO> fetchPageByStatus(Contact.Status status, int page, int limit, String[] sort) {
         Sort sortOrder = Sort.by(Sort.Direction.fromString(sort[1]), sort[0]);
         Pageable pageable = PageRequest.of(page, limit, sortOrder);
